@@ -1,15 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>demo client page</title>
 </head>
+
 <body>
     <div>
         <button id="btn-clicked" class="btn-IS">click here</button>
-        <a href="https://www.linkedin.com/in/shivamvora/" class="linkedin_url">update employement</a>
+        <a href="https://www.linkedin.com/in/meet2amit/" class="linkedin_url">update employement</a>
     </div>
+
+    <script>
+        let observer = new MutationObserver(callback);
+        let targetNode = document.body.querySelector('#btn-clicked')
+        console.log('targetNode: ', targetNode);
+        const observerOptions = {
+            childList: true,
+            attributes: true,
+            characterData: false,
+            subtree: false,
+            attributeFilter: ['one', 'two'],
+            attributeOldValue: false,
+            characterDataOldValue: false
+
+        }
+        function callback(mutations) {
+    var allbtns = []
+    var alllinks = [];
+    var isClicked = false;
+    for (const iterator of mutations) {
+        const id = iterator.target.querySelector('button').id;               
+        const link = iterator.target.querySelector('a');               
+        alllinks.push(link)
+        if(id==='btn-clicked'){
+            const button = iterator.target.querySelector('#btn-clicked')
+            allbtns.push(button)
+        }
+    }
+    if(allbtns && !isClicked){
+        isClicked=true;
+        allbtns[0].addEventListener('click',(e)=>{
+                console.log('button is clicked',e);
+                chrome.runtime.sendMessage({ text: "UPDATE_EMPLOYEMENT",url:alllinks[0].href });
+            })
+    }
+    console.log('allbtns: ', allbtns);
+}
+
+        observer.observe(targetNode, observerOptions);
+    </script>
 </body>
+
 </html>
